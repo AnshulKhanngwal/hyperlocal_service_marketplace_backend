@@ -1,0 +1,16 @@
+// use prisma-next
+// Contract inferred from the live database schema. Edit as needed, then run `prisma contract emit`.
+
+model User {
+  id        Int         @id(map: "user_pkey") @default(autoincrement())
+  createdAt Timestamptz @default(now())
+  email     String      @unique(map: "user_email_key")
+  name      String?
+  updatedAt Timestamptz
+  username  String?
+  role      String      @default("CUSTOMER")
+  password  String
+
+  @@check(expression: "(role = ANY (ARRAY['ADMIN'::text, 'CUSTOMER'::text, 'SERVICE_PROVIDER'::text]))", map: "user_role_check_762c6389")
+  @@map("user")
+}

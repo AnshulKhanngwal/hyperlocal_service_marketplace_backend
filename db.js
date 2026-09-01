@@ -1,18 +1,18 @@
-const { Pool } = require('pg');
-require('dotenv').config();
+const { PrismaClient } = require('@prisma/client');
 
-// Initialize the connection pool using the URI from your .env file
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+// Instantiate the Prisma Client
+const prisma = new PrismaClient();
 
-// Test the connection instantly
-pool.query('SELECT NOW()', (err, res) => {
-  if (err) {
-    console.error('Database connection failed:', err.stack);
-  } else {
-    console.log('Connected to PostgreSQL successfully at:', res.rows[0].now);
+// Optional: A quick query to test that Prisma can talk to Docker
+async function testConnection() {
+  try {
+    await prisma.$connect();
+    console.log('Prisma connected to PostgreSQL successfully!');
+  } catch (error) {
+    console.error('Prisma database connection failed:', error);
   }
-});
+}
 
-module.exports = pool;
+testConnection();
+
+module.exports = prisma;

@@ -1,8 +1,13 @@
-const express = require('express');
-const router = express.Router()
+// const { PrismaClient } = require('@prisma/client');
+import express from 'express';
+import {handleRegistration, createAdmin} from '../controllers/authController.js'
 
-router.get('/', (req, res) =>{
-    res.send("This is Auth Router.")
-})
+const authRouter = express.Router()
 
-module.exports = router;
+
+// Example of creating a service provider
+authRouter.post('/register', handleRegistration);
+authRouter.post('createAdmin', createAdmin);
+
+export default authRouter;
+
