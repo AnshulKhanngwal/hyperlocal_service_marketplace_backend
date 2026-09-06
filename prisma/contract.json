@@ -165,6 +165,10 @@
                 },
                 "updatedAt": {
                   "codecId": "pg/timestamptz-temporal@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
                   "nativeType": "timestamptz",
                   "nullable": false
                 },
@@ -197,7 +201,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "90a6bd242fd1a1a5ba32ab8ff4c5492e531d83be57fa9a36062cb9d69b2cac99"
+    "storageHash": "2d3db2153f86b756d4ff9fe49c610c168cb869b7e0d79f8e04dc65944064416c"
   },
   "capabilities": {
     "postgres": {

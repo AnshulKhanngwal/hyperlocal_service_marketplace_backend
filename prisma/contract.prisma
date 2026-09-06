@@ -6,7 +6,7 @@ model User {
   createdAt Timestamptz @default(now())
   email     String      @unique(map: "user_email_key")
   name      String?
-  updatedAt Timestamptz
+  updatedAt Timestamptz @default(now())
   username  String?
   role      String      @default("CUSTOMER")
   password  String
