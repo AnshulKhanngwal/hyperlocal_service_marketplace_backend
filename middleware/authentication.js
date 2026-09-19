@@ -6,7 +6,7 @@ export default function authenticateToken(req, res, next) {
   if (!token) {
     return res.status(401).json({ message: 'Access token required' });
   }
-  jwt.verify(token, process.env.JWT_SECRET, (err, decodedUser) => {
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, decodedUser) => {
     if (err) {
       return res.status(403).json({ message: 'Invalid or expired token' });
     }

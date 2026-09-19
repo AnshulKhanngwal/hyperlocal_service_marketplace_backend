@@ -1,21 +1,64 @@
 // use prisma-next
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  username  String?
-  name      String?
-  posts     Post[]
-  createdAt TimestamptzString @default(now())
-  updatedAt temporal.updatedAtString()
+  id          Int                @id @default(autoincrement())
+  username       String?             @unique
+  email       String             @unique
+  name        String?
+  password    String?
+  phone       String?            
+  profile_pic String?
+  is_active   Boolean            @default(true)
+  role        String             @default("CUSTOMER")
+  lat         Decimal?
+  long        Decimal?
+  createdAt   TimestamptzString  @default(now())
+  updatedAt   TimestamptzString  @default(now())
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
-  createdAt TimestamptzString @default(now())
-  updatedAt temporal.updatedAtString()
+model Service {
+  id          Int                 @id @default(autoincrement())
+  providerId    Int
+  provider   User @relation(fields: [providerId], references: [id])
+  category    String
+  description String
+  reviews_values     Int
+  total_reviews Int
+  createdAt   TimestamptzString  @default(now())
+  updatedAt   TimestamptzString  @default(now())
+}
+
+model Booking {
+  id          Int                 @id @default(autoincrement())
+  userId      Int
+  user        User @relation(fields: [userId], references: [id])
+  serviceId   Int
+  service     Service @relation(fields: [serviceId], references: [id])
+  bookingDate   TimestamptzString  @default(now())
+  status      String @default("BOOKED")
+  providerId  Int
+  provider    User @relation(fields: [providerId], references: [id])
+  customerNote     String?
+  providerNote String?
+  createdAt   TimestamptzString  @default(now())
+  updatedAt   TimestamptzString  @default(now())
+}
+
+model Notification {
+  id          Int                 @id @default(autoincrement())
+  userId      Int
+  user        User @relation(fields: [userId], references: [id])
+  seen      Boolean @default(false)
+  description String?
+  createdAt   TimestamptzString  @default(now())
+  updatedAt   TimestamptzString  @default(now())
+}
+
+model Queries {
+  id          Int                 @id @default(autoincrement())
+  name        String
+  email       String      @unique
+  description String?
+  createdAt   TimestamptzString  @default(now())
+  updatedAt   TimestamptzString  @default(now())
 }

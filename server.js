@@ -1,6 +1,10 @@
 import 'dotenv/config'
 import express from 'express';
 import authRouter from './routes/authRoutes.js'
+import serviceRouter from './routes/serviceRoutes.js'
+import bookingRouter from './routes/bookingRoutes.js'
+import queryRouter from './routes/queryRoutes.js'
+import notificationRouter from './routes/notificationRoutes.js'
 import { Temporal } from "@js-temporal/polyfill";
 import cors from 'cors';
 
@@ -23,6 +27,10 @@ app.use(cors({
 }));
 
 app.use('/auth', authRouter);
+app.use('/service', serviceRouter);
+app.use('/booking', bookingRouter);
+app.use('/query', queryRouter);
+app.use('/notification', notificationRouter);
 
 app.listen(port, () => {
     console.log("Temporal:", typeof globalThis.Temporal);

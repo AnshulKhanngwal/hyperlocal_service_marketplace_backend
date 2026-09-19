@@ -3,14 +3,20 @@
 
 model User {
   id        Int         @id(map: "user_pkey") @default(autoincrement())
-  createdAt Timestamptz @default(now())
-  email     String      @unique(map: "user_email_key")
-  name      String?
-  updatedAt Timestamptz @default(now())
-  username  String?
   role      String      @default("CUSTOMER")
-  password  String
+  name      String?
+  email     String      @unique(map: "user_email_key")
+  password  String      
+  phone     String      @default("9999999999")   
+  profile_pic String?
+  is_active Bool        @default(true)
+  lat       Decimal
+  long      Decimal
+  createdAt Timestamptz @default(now())
+  updatedAt Timestamptz @default(now())
 
   @@check(expression: "(role = ANY (ARRAY['ADMIN'::text, 'CUSTOMER'::text, 'SERVICE_PROVIDER'::text]))", map: "user_role_check_762c6389")
   @@map("user")
 }
+
+

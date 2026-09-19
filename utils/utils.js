@@ -1,0 +1,11 @@
+export const USER_ROLES = [
+    "CUSTOMER", "SERVICE_PROVIDER", "ADMIN"
+]
+
+export const BOOKING_STATUS = [
+    "BOOKING", "COMPLETED", "CANCELLED"
+]
+
+export const SERVICE_CATEGORIES = [
+    "ELECTRICIAN", "PLUMBER", "TUTOR"
+]

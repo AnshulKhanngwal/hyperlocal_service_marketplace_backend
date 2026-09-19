@@ -1,31 +1,24 @@
-// import PrismaClient from '@prisma/client';
-// const prisma = new PrismaClient();
-// const bcrypt = require('bcrypt');
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-// const jwt = require('jsonwebtoken');
-import { db } from "../prisma/db.js";
+import { db } from "../src/prisma/db.ts";
+import { access } from 'node:fs';
 
 export async function register(req, res){
-    // console.log("This is your reqest data : ", req.body)
     const {email, password, name, role} = req.body;
-    // res.status(200).json({
-    //     "data": req.body 
-    // })
     const hashedpass = await bcrypt.hash(password, 12);
     try {
         const newUser = await db.orm.public.User.create({
-        // data: {
             email: email,
             password: hashedpass, // Make sure to hash this using bcrypt later!
             name: name,
             role: role ?? 'SERVICE_PROVIDER' // Explicitly setting the role
-        // },
         });
-        console.log('Provider created:', newUser);
+        const { password, ...safeUser } = newUser;
+        const accessToken = jwt.sign(safeUser, process.env.TOKEN_SECRET);
         res.status(201).json({
             "message": "Created Successfully",
-            "data": newUser
+            "data": safeUser,
+            "token": accessToken
         })
     } catch (error) {
         console.error('Error creating provider:', error);
@@ -60,9 +53,10 @@ export async function createAdmin(req, res){
 }
 
 export async function login(req, res){
+    console.log("Entered login in backend")
     try{
-        const {email, password} = req.body;
-        if(!email || !password){
+        const {email, pass} = req.body;
+        if(!email || !pass){
             res.status(400).json({
                 "message": "Email and password is requied."
             })
@@ -72,35 +66,41 @@ export async function login(req, res){
                 email: email
             }
         ).first()
-        console.log("This is your user", user);
-        const match = bcrypt.compare(password, user.password);
         if(!user){
-            res.status(404).json({
+            return res.status(404).json({
                 "message": "Not Found!"
             })
         }
+        console.log("This is your user", user);
+        const match = await bcrypt.compare(pass, user.password);
         if(!match){
-            res.status(400).json({
+            return res.status(400).json({
                 "message": "Wrong username or password!"
             })
         }
-        const accessToken = jwt.sign(JSON.stringify(user), process.env.TOKEN_SECRET);
-        res.status(200).json({
-            "data": user,
+        const { password, ...safeUser } = user;
+        const accessToken = jwt.sign(safeUser, process.env.TOKEN_SECRET);
+        return res.status(200).json({
+            "data": safeUser,
             "accessToken": accessToken
         })
     }catch(e){
         console.log(e)
+        return res.status(400).json({
+            "data": "Error",
+            "message": e
+        })
     }
 
 }
 
 export async function getUsers(req, res){
     const users = await db.orm.public.User.all()
+    const safeUsers = users//.map(({ password, ...user }) => user);
     console.log("Users", users)
-    res.status(200).json({
+    return res.status(200).json({
         "msg": "Success",
-        "data": users
+        "data": safeUsers
     })
 
 }

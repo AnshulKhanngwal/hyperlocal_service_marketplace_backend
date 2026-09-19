@@ -18,6 +18,7 @@ yarn-error.log*
 dist/
 build/
 out/
+commands.md
 
 # IDE and OS files
 .vscode/
@@ -27,6 +28,10 @@ out/
 *~
 .DS_Store
 Thumbs.db
+.agents
+.claude
+.cursor
+.devin
 
 # Test coverage
 coverage/
