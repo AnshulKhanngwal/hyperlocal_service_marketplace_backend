@@ -57,7 +57,7 @@ export async function login(req, res){
     try{
         const {email, pass} = req.body;
         if(!email || !pass){
-            res.status(400).json({
+            return res.status(400).json({
                 "message": "Email and password is requied."
             })
         }
@@ -72,6 +72,14 @@ export async function login(req, res){
             })
         }
         console.log("This is your user", user);
+        if(!user.password){
+            const hashedpass = await bcrypt.hash(pass, 12);
+            const updatedUser = await db.orm.public.User
+            .where({ id: user.id })
+            .update({
+                password: hashedpass
+            });
+        }
         const match = await bcrypt.compare(pass, user.password);
         if(!match){
             return res.status(400).json({
