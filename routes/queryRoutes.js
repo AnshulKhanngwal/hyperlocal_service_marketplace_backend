@@ -7,7 +7,7 @@ const queryRouter = express.Router()
 
 
 // Example of creating a service provider
-queryRouter.get('/getQueries', getQueries);
+queryRouter.get('/getQueries', authenticateToken, getQueries);
 queryRouter.post('/createQuery', createQuery);
 
 export default queryRouter;

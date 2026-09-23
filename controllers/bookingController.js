@@ -61,14 +61,26 @@ export async function updateBooking(req, res){
 }
 
 export async function getBookings(req, res){
-    console.log("Entered getServices");
+    const user = req.user;
+    const {category} = req.query;
+    let data;
     try{
         console.log("finding services");
-        const services = await db.orm.public.Booking.all();
-        console.log("after services")
+        if(user.role == "ADMIN"){
+            if(category){
+                data = await db.orm.public.Booking.include("user").include("service").include("provider").where({category: category}).all();
+            }else{
+                data = await db.orm.public.Booking.include("user").include("service").include("provider").all();
+            }
+        }else if(user.role == "CUSTOMER"){
+            data = await db.orm.public.Booking.include("user").include("service").include("provider").where({userId: user.id}).all();
+        }else{
+            data = await db.orm.public.Booking.include("user").include("service").include("provider").where({providerId: user.id}).all();
+        }
+        console.log("after data", data)
         return res.status(200).json({
             "msg": "Success",
-            "data": services
+            "data": data
         })
     } catch (error) {
         console.error('Error creating provider:', error);

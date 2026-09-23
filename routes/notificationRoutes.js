@@ -7,8 +7,8 @@ const notificationRouter = express.Router()
 
 
 // Example of creating a service provider
-notificationRouter.get('/getNotifications', getNotifications);
-notificationRouter.post('/createNotification', createNotification);
-notificationRouter.post('/updateNotification', updateNotification);
+notificationRouter.get('/getNotifications', authenticateToken, getNotifications);
+notificationRouter.post('/createNotification', authenticateToken, createNotification);
+notificationRouter.post('/updateNotification', authenticateToken, updateNotification);
 
 export default notificationRouter;
