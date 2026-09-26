@@ -4,14 +4,16 @@ import { db } from "../src/prisma/db.ts";
 import { access } from 'node:fs';
 
 export async function register(req, res){
-    const {email, password, name, role} = req.body;
+    const {email, password, name, role, latitude, longitude} = req.body;
     const hashedpass = await bcrypt.hash(password, 12);
     try {
         const newUser = await db.orm.public.User.create({
             email: email,
             password: hashedpass, // Make sure to hash this using bcrypt later!
             name: name,
-            role: role ?? 'SERVICE_PROVIDER' // Explicitly setting the role
+            role: role ?? 'SERVICE_PROVIDER', // Explicitly setting the role
+            lat: latitude,
+            long: longitude
         });
         const { password, ...safeUser } = newUser;
         const accessToken = jwt.sign(safeUser, process.env.TOKEN_SECRET);
@@ -104,13 +106,19 @@ export async function login(req, res){
 
 export async function getUsers(req, res){
     const users = await db.orm.public.User.all()
-    const safeUsers = users//.map(({ password, ...user }) => user);
+    const user = req.user;
+    if(user.role !== "ADMIN"){
+        return res.status(200).json({
+        "msg": "Only ADMIN can access users data.",
+        "data": []
+    })
+    }
+    const safeUsers = users;
     console.log("Users", users)
     return res.status(200).json({
         "msg": "Success",
         "data": safeUsers
     })
-
 }
 
 // export default {'handleRegistration', 'createAdmin'};

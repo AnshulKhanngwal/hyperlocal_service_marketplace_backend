@@ -54,11 +54,17 @@ export async function updateNotification(req, res){
 }
 
 export async function getNotifications(req, res){
+    const user = req.user;
     console.log("Entered getServices");
     try{
         console.log("finding services");
-        const notifications = await db.orm.public.Notification.all();
+        const notifications = await db.orm.public.Notification.where({userId: user.id}).all();
         console.log("after notifications")
+        await db.orm.public.Notification.where({userId: user.id})
+            .where({ seen: false })
+            .update({
+                seen: true
+            });
         return res.status(200).json({
             "msg": "Success",
             "data": notifications

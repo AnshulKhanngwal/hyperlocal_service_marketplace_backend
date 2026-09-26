@@ -1,8 +1,15 @@
+import { generateNotification } from "../services/NotificationService.js";
 import { db } from "../src/prisma/db.ts";
 
 export async function createBooking(req, res){
     const user = req.user;
     const {serviceId, userId, providerId, customerNote, ProviderNote } = req.body;
+    if(user.role === "SERVICE_PROVIDER"){
+        res.status(400).json({
+            "message": "Provider can not create Bookings.",
+            "data": []
+        })
+    }
     try {
         const newBooking = await db.orm.public.Booking.create({
             userId: userId,
@@ -12,7 +19,8 @@ export async function createBooking(req, res){
             providerNote: ProviderNote,
             bookingDate: new Date().toISOString()
         });
-        
+        generateNotification(user.id, "New Booking")
+        generateNotification(providerId, "New Booking")
         res.status(201).json({
             "message": "Created Successfully",
             "data": newBooking
@@ -67,13 +75,9 @@ export async function getBookings(req, res){
     try{
         console.log("finding services");
         if(user.role == "ADMIN"){
-            if(category){
-                data = await db.orm.public.Booking.include("user").include("service").include("provider").where({category: category}).all();
-            }else{
                 data = await db.orm.public.Booking.include("user").include("service").include("provider").all();
-            }
         }else if(user.role == "CUSTOMER"){
-            data = await db.orm.public.Booking.include("user").include("service").include("provider").where({userId: user.id}).all();
+                data = await db.orm.public.Booking.include("user").include("service").include("provider").where({userId: user.id}).all();
         }else{
             data = await db.orm.public.Booking.include("user").include("service").include("provider").where({providerId: user.id}).all();
         }

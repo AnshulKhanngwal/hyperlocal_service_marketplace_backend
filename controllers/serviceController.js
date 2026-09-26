@@ -48,11 +48,28 @@ export async function updateService(req, res){
 }
 
 export async function getServices(req, res){
+    const user = req.user;
+    const {category} = req.query;
     console.log("Entered getServices");
     try{
-        console.log("finding services");
-        const services = await db.orm.public.Service.all();
+        let services;
+        if(user.role === "ADMIN" || user.role === "CUSTOMER"){
+            if(category && category !== "ALL"){
+                services = await db.orm.public.Service.where({category: category}).include("provider").all();
+            }
+            else{
+                services = await db.orm.public.Service.include("provider").all();
+            };
+        }else if(user.role === "SERVICE_PROVIDER"){
+            if(category && category !== "ALL"){
+                services = await db.orm.public.Service.where({providerId: user.id}).where({category: category}).include("provider").all();
+            }
+            else{
+                services = await db.orm.public.Service.where({providerId: user.id}).include("provider").all();
+            }
+        }
         console.log("after services")
+        console.log("These are your services", services);
         return res.status(200).json({
             "msg": "Success",
             "data": services
