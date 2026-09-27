@@ -54,7 +54,8 @@ export async function updateBooking(req, res){
                 providerNote: providerNote ?? booking.providerNote
             }
         );
-        // const updatedBooking = await db.orm.public.Service.where({id:bookingId}).first()
+        generateNotification(booking.userId, "Booking Updated")
+        generateNotification(booking.providerId, "Booking Updated")
         res.status(200).json({
             "message": "Service Updated.",
             "data": updatedbooking

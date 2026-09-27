@@ -25,12 +25,7 @@ export async function createQuery(req, res){
 export async function getQueries(req, res){
     const user = req.user;
     try{
-        let queries;
-        if(user.role === "ADMIN"){
-            queries = await db.orm.public.Queries.all();
-        }else{
-            queries = await db.orm.public.Queries.where({userId: user.id}).all();
-        }
+        const queries = await db.orm.public.Queries.all();
         return res.status(200).json({
             "msg": "Success",
             "data": queries
