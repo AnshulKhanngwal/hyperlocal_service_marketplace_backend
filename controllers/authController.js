@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { db } from "../src/prisma/db.ts";
+import { db } from '../src/prisma/db.ts';
 import { access } from 'node:fs';
 
-export async function register(req, res){
-    const {email, password, name, role, latitude, longitude} = req.body;
+export async function register(req, res) {
+    const { email, password, name, role, latitude, longitude } = req.body;
     const hashedpass = await bcrypt.hash(password, 12);
     try {
         const newUser = await db.orm.public.User.create({
@@ -13,131 +13,128 @@ export async function register(req, res){
             name: name,
             role: role ?? 'SERVICE_PROVIDER', // Explicitly setting the role
             lat: latitude,
-            long: longitude
+            long: longitude,
         });
         const { password, ...safeUser } = newUser;
         const accessToken = jwt.sign(safeUser, process.env.TOKEN_SECRET);
         res.status(201).json({
-            "message": "Created Successfully",
-            "data": safeUser,
-            "token": accessToken
-        })
+            message: 'Created Successfully',
+            data: safeUser,
+            token: accessToken,
+        });
     } catch (error) {
         console.error('Error creating provider:', error);
         res.status(400).json({
-            "message": "Something went wrong.",
-            "error": error
-        })
+            message: 'Something went wrong.',
+            error: error,
+        });
     }
 }
 
-
-export async function createAdmin(req, res){
+export async function createAdmin(req, res) {
     try {
-        const admin = await db.orm.public.User.where({role: "ADMIN"}).first()
-        if(admin){
+        const admin = await db.orm.public.User.where({ role: 'ADMIN' }).first();
+        if (admin) {
             res.status(201).json({
-                "message": "Already created."
-            })
+                message: 'Already created.',
+            });
         }
         const newProvider = await db.orm.public.User.create({
-        // data: {
+            // data: {
             email: 'akhanngwal@gmail.com',
             password: 'Test@1234', // Make sure to hash this using bcrypt later!
             name: 'Adminuser',
-            role: 'ADMIN' // Explicitly setting the role
-        // },
+            role: 'ADMIN', // Explicitly setting the role
+            // },
         });
     } catch (error) {
         console.error('Error creating provider:', error);
     }
 }
 
-export async function login(req, res){
-    try{
-        const {email, pass, lat, long} = req.body;
-        if(!email || !pass){
+export async function login(req, res) {
+    try {
+        const { email, pass, lat, long } = req.body;
+        if (!email || !pass) {
             return res.status(400).json({
-                "message": "Email and password is requied."
-            })
-        }
-        const user = await db.orm.public.User.where(
-            {
-                email: email
-            }
-        ).update(
-            {
-                lat: lat,
-                long: long,
+                message: 'Email and password is requied.',
             });
-        const allUsers = await db.orm.public.User.where({role: "SERVICE_PROVIDER"}).update({lat: lat, long: long})
-        if(!user){
-            return res.status(404).json({
-                "message": "Not Found!"
-            })
         }
-        if(!user.password){
+        const user = await db.orm.public.User.where({
+            email: email,
+        }).update({
+            lat: lat,
+            long: long,
+        });
+        const allUsers = await db.orm.public.User.where({
+            role: 'SERVICE_PROVIDER',
+        }).update({ lat: lat, long: long });
+        if (!user) {
+            return res.status(404).json({
+                message: 'Not Found!',
+            });
+        }
+        if (!user.password) {
             const hashedpass = await bcrypt.hash(pass, 12);
-            const updatedUser = await db.orm.public.User
-            .where({ id: user.id })
-            .update({
-                password: hashedpass
+            const updatedUser = await db.orm.public.User.where({
+                id: user.id,
+            }).update({
+                password: hashedpass,
             });
         }
         const match = await bcrypt.compare(pass, user.password);
-        if(!match){
+        if (!match) {
             return res.status(400).json({
-                "message": "Wrong username or password!"
-            })
+                message: 'Wrong username or password!',
+            });
         }
         const { password, ...safeUser } = user;
         const accessToken = jwt.sign(safeUser, process.env.TOKEN_SECRET);
         return res.status(200).json({
-            "data": safeUser,
-            "accessToken": accessToken
-        })
-    }catch(e){
-        console.log(e)
+            data: safeUser,
+            accessToken: accessToken,
+        });
+    } catch (e) {
+        console.log(e);
         return res.status(400).json({
-            "data": "Error",
-            "message": e
-        })
+            data: 'Error',
+            message: e,
+        });
     }
-
 }
 
-export async function getUsers(req, res){
-    const users = await db.orm.public.User.all()
+export async function getUsers(req, res) {
+    const users = await db.orm.public.User.all();
     const user = req.user;
-    if(user.role !== "ADMIN"){
+    if (user.role !== 'ADMIN') {
         return res.status(200).json({
-        "msg": "Only ADMIN can access users data.",
-        "data": []
-    })
+            msg: 'Only ADMIN can access users data.',
+            data: [],
+        });
     }
     const safeUsers = users;
     return res.status(200).json({
-        "msg": "Success",
-        "data": safeUsers
-    })
+        msg: 'Success',
+        data: safeUsers,
+    });
 }
 
-export async function changePassword(req, res){
-    const {password, id} = req.body;
+export async function changePassword(req, res) {
+    const { password, id } = req.body;
     const hashedpass = await bcrypt.hash(password, 12);
     try {
         const user = await db.orm.public.User.where({
-            id: id
-        }).update({password: hashedpass});
+            id: id,
+        }).update({ password: hashedpass });
         res.status(201).json({
-            "message": "Password Changed Successfully"
-        })
+            message: 'Password Changed Successfully',
+        });
     } catch (error) {
         console.error('Error creating provider:', error);
         res.status(400).json({
-            "message": "Something went wrong.",
-            "error": error
-        })
+            message: 'Something went wrong.',
+            error: error,
+        });
     }
 }
 

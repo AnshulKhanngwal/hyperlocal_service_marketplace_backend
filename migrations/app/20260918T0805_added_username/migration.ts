@@ -6,24 +6,26 @@ import endContract from '../../snapshots/a98c8dec9d4e6788538b27abbeda116e3da1dc4
 import { Migration, MigrationCLI, col } from '@prisma/orm-postgres/migration';
 
 export default class M extends Migration<Start, End> {
-  override readonly startContractJson = startContract;
-  override readonly endContractJson = endContract;
+    override readonly startContractJson = startContract;
+    override readonly endContractJson = endContract;
 
-  override get operations() {
-    return [
-      this.addColumn({
-        schema: 'public',
-        table: 'user',
-        column: col('username', 'text', { codecRef: { codecId: 'pg/text@1' } }),
-      }),
-      this.addUnique({
-        schema: 'public',
-        table: 'user',
-        constraint: 'user_username_key',
-        columns: ['username'],
-      }),
-    ];
-  }
+    override get operations() {
+        return [
+            this.addColumn({
+                schema: 'public',
+                table: 'user',
+                column: col('username', 'text', {
+                    codecRef: { codecId: 'pg/text@1' },
+                }),
+            }),
+            this.addUnique({
+                schema: 'public',
+                table: 'user',
+                constraint: 'user_username_key',
+                columns: ['username'],
+            }),
+        ];
+    }
 }
 
 MigrationCLI.run(import.meta.url, M);

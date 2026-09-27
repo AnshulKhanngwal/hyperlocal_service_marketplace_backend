@@ -1,9 +1,9 @@
-import { db } from "../src/prisma/db.ts";
+import { db } from '../src/prisma/db.ts';
 
-export async function generateNotification(userId, description){
+export async function generateNotification(userId, description) {
     const newNotification = await db.orm.public.Notification.create({
-                userId: userId,
-                description: description
-            });
+        userId: userId,
+        description: description,
+    });
     return true;
 }

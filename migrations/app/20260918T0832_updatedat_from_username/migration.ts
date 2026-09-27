@@ -6,43 +6,43 @@ import endContract from '../../snapshots/bf77b2723082b01ad49d5a21d78f87771be9dbe
 import { Migration, MigrationCLI } from '@prisma/orm-postgres/migration';
 
 export default class M extends Migration<Start, End> {
-  override readonly startContractJson = startContract;
-  override readonly endContractJson = endContract;
+    override readonly startContractJson = startContract;
+    override readonly endContractJson = endContract;
 
-  override get operations() {
-    return [
-      this.setDefault({
-        schema: 'public',
-        table: 'booking',
-        column: 'updatedAt',
-        defaultSql: 'DEFAULT (now())',
-      }),
-      this.setDefault({
-        schema: 'public',
-        table: 'notification',
-        column: 'updatedAt',
-        defaultSql: 'DEFAULT (now())',
-      }),
-      this.setDefault({
-        schema: 'public',
-        table: 'queries',
-        column: 'updatedAt',
-        defaultSql: 'DEFAULT (now())',
-      }),
-      this.setDefault({
-        schema: 'public',
-        table: 'service',
-        column: 'updatedAt',
-        defaultSql: 'DEFAULT (now())',
-      }),
-      this.setDefault({
-        schema: 'public',
-        table: 'user',
-        column: 'updatedAt',
-        defaultSql: 'DEFAULT (now())',
-      }),
-    ];
-  }
+    override get operations() {
+        return [
+            this.setDefault({
+                schema: 'public',
+                table: 'booking',
+                column: 'updatedAt',
+                defaultSql: 'DEFAULT (now())',
+            }),
+            this.setDefault({
+                schema: 'public',
+                table: 'notification',
+                column: 'updatedAt',
+                defaultSql: 'DEFAULT (now())',
+            }),
+            this.setDefault({
+                schema: 'public',
+                table: 'queries',
+                column: 'updatedAt',
+                defaultSql: 'DEFAULT (now())',
+            }),
+            this.setDefault({
+                schema: 'public',
+                table: 'service',
+                column: 'updatedAt',
+                defaultSql: 'DEFAULT (now())',
+            }),
+            this.setDefault({
+                schema: 'public',
+                table: 'user',
+                column: 'updatedAt',
+                defaultSql: 'DEFAULT (now())',
+            }),
+        ];
+    }
 }
 
 MigrationCLI.run(import.meta.url, M);

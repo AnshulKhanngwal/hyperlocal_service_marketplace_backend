@@ -1,45 +1,45 @@
 {
-  "name": "backend_hyperlocal_service_marketplace",
-  "version": "1.0.0",
-  "description": "Hyper Local Service Marketplace (Backend)",
-  "homepage": "https://github.com/AnshulKhanngwal/hyperlocal_service_marketplace_backend#readme",
-  "bugs": {
-    "url": "https://github.com/AnshulKhanngwal/hyperlocal_service_marketplace_backend/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/AnshulKhanngwal/hyperlocal_service_marketplace_backend.git"
-  },
-  "license": "ISC",
-  "author": "Anshul Khanngwal",
-  "type": "module",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "postinstall": "prisma skills sync || exit 0",
-    "contract:emit": "prisma contract emit",
-    "init": "prisma contract emit"
-  },
-  "dependencies": {
-    "@js-temporal/polyfill": "^0.5.1",
-    "@prisma/orm-postgres": "^8.0.0-rc.8",
-    "bcrypt": "^6.0.0",
-    "bcryptjs": "^3.0.3",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3",
-    "pg": "^8.23.0"
-  },
-  "devDependencies": {
-    "@prisma/cli-engine": "^0.2.3",
-    "@types/node": "^26.4.0",
-    "@types/pg": "^8.23.1",
-    "nodemon": "^3.1.14",
-    "prisma": "^8.0.0-rc.10",
-    "tsx": "^4.23.13",
-    "typescript": "^7.0.2"
-  }
+    "name": "backend_hyperlocal_service_marketplace",
+    "version": "1.0.0",
+    "description": "Hyper Local Service Marketplace (Backend)",
+    "homepage": "https://github.com/AnshulKhanngwal/hyperlocal_service_marketplace_backend#readme",
+    "bugs": {
+        "url": "https://github.com/AnshulKhanngwal/hyperlocal_service_marketplace_backend/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/AnshulKhanngwal/hyperlocal_service_marketplace_backend.git"
+    },
+    "license": "ISC",
+    "author": "Anshul Khanngwal",
+    "type": "module",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "dev": "nodemon server.js",
+        "postinstall": "prisma skills sync || exit 0",
+        "contract:emit": "prisma contract emit",
+        "init": "prisma contract emit"
+    },
+    "dependencies": {
+        "@js-temporal/polyfill": "^0.5.1",
+        "@prisma/orm-postgres": "^8.0.0-rc.8",
+        "bcrypt": "^6.0.0",
+        "bcryptjs": "^3.0.3",
+        "cookie-parser": "^1.4.7",
+        "cors": "^2.8.6",
+        "dotenv": "^17.4.2",
+        "express": "^5.2.1",
+        "jsonwebtoken": "^9.0.3",
+        "pg": "^8.23.0"
+    },
+    "devDependencies": {
+        "@prisma/cli-engine": "^0.2.3",
+        "@types/node": "^26.4.0",
+        "@types/pg": "^8.23.1",
+        "nodemon": "^3.1.14",
+        "prisma": "^8.0.0-rc.10",
+        "tsx": "^4.23.13",
+        "typescript": "^7.0.2"
+    }
 }
