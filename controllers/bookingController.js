@@ -73,7 +73,6 @@ export async function getBookings(req, res){
     const {category} = req.query;
     let data;
     try{
-        console.log("finding services");
         if(user.role == "ADMIN"){
                 data = await db.orm.public.Booking.include("user").include("service").include("provider").all();
         }else if(user.role == "CUSTOMER"){
@@ -81,7 +80,6 @@ export async function getBookings(req, res){
         }else{
             data = await db.orm.public.Booking.include("user").include("service").include("provider").where({providerId: user.id}).all();
         }
-        console.log("after data", data)
         return res.status(200).json({
             "msg": "Success",
             "data": data

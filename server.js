@@ -33,6 +33,5 @@ app.use('/query', queryRouter);
 app.use('/notification', notificationRouter);
 
 app.listen(port, () => {
-    console.log("Temporal:", typeof globalThis.Temporal);
     console.log(`Server is running at ${port}`)
 })

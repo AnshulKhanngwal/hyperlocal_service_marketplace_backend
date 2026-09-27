@@ -48,16 +48,14 @@ export async function createAdmin(req, res){
             role: 'ADMIN' // Explicitly setting the role
         // },
         });
-        console.log('Provider created:', newProvider);
     } catch (error) {
         console.error('Error creating provider:', error);
     }
 }
 
 export async function login(req, res){
-    console.log("Entered login in backend")
     try{
-        const {email, pass} = req.body;
+        const {email, pass, lat, long} = req.body;
         if(!email || !pass){
             return res.status(400).json({
                 "message": "Email and password is requied."
@@ -67,13 +65,17 @@ export async function login(req, res){
             {
                 email: email
             }
-        ).first()
+        ).update(
+            {
+                lat: lat,
+                long: long,
+            });
+        const allUsers = await db.orm.public.User.where({role: "SERVICE_PROVIDER"}).update({lat: lat, long: long})
         if(!user){
             return res.status(404).json({
                 "message": "Not Found!"
             })
         }
-        console.log("This is your user", user);
         if(!user.password){
             const hashedpass = await bcrypt.hash(pass, 12);
             const updatedUser = await db.orm.public.User
@@ -114,11 +116,29 @@ export async function getUsers(req, res){
     })
     }
     const safeUsers = users;
-    console.log("Users", users)
     return res.status(200).json({
         "msg": "Success",
         "data": safeUsers
     })
+}
+
+export async function changePassword(req, res){
+    const {password, id} = req.body;
+    const hashedpass = await bcrypt.hash(password, 12);
+    try {
+        const user = await db.orm.public.User.where({
+            id: id
+        }).update({password: hashedpass});
+        res.status(201).json({
+            "message": "Password Changed Successfully"
+        })
+    } catch (error) {
+        console.error('Error creating provider:', error);
+        res.status(400).json({
+            "message": "Something went wrong.",
+            "error": error
+        })
+    }
 }
 
 // export default {'handleRegistration', 'createAdmin'};

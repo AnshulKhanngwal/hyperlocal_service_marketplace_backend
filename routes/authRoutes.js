@@ -1,6 +1,6 @@
 // const { PrismaClient } = require('@prisma/client');
 import express from 'express';
-import {register, createAdmin, getUsers, login} from '../controllers/authController.js'
+import {register, createAdmin, getUsers, login, changePassword} from '../controllers/authController.js'
 import authenticateToken from '../middleware/authentication.js';
 
 const authRouter = express.Router()
@@ -12,5 +12,6 @@ authRouter.get('/createAdmin', createAdmin);
 // authRouter.get('/getUsers', getUsers);
 authRouter.get('/getUsers', authenticateToken, getUsers);
 authRouter.post('/login', login);
+authRouter.post('/changePassword', changePassword);
 
 export default authRouter;
